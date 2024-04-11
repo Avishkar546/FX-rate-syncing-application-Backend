@@ -19,7 +19,7 @@ export class AccountService {
     const account = await this.accountRepository.findOne({
       where: { userId },
       relations: ['balances'],
-    });
+    });     
 
     if (!account) {
       throw new Error('User account not found');
