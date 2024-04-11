@@ -1,5 +1,5 @@
 // fx-rate.controller.ts
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { FXRateService } from './fx-rate.service';
 import { v4 as uuidv4 } from 'uuid';
 import * as cache from 'memory-cache';
@@ -36,5 +36,18 @@ export class FXRateController {
 
     // Return response including quoteId, expiry_at, and fetched FX rates
     return { quoteId, expiry_at, fxRates };
+  }
+
+  // API endpoint 3: Perform FX conversion
+  @Post('conversion')
+  async performFXConversion(@Body() conversionData: any): Promise<{ convertedAmount: number; currency: string }> {
+    // Extract data from request body
+    const { quoteId, fromCurrency, toCurrency, amount } = conversionData;
+
+    // Perform FX conversion using the quoteId and provided data
+    const convertedAmount = await this.fxRateService.convertFX(fromCurrency, toCurrency, amount, quoteId);
+
+    // Return response with converted amount and currency
+    return { convertedAmount, currency: toCurrency };
   }
 }
